@@ -1,0 +1,7 @@
+# Hypermutated patient IDs — one per line, lines starting with # are ignored.
+# Patients listed here are flagged (hypermutator_flag = TRUE) but not removed;
+# downstream filtering is left to the analyst.
+#
+# Example:
+# PATIENT-001
+# PATIENT-002

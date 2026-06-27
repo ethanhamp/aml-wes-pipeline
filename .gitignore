@@ -49,6 +49,9 @@ OSC/sftp-nch-key.txt
 OSC/*.pem
 OSC/*.key
 
+# User-supplied config with patient IDs (template is tracked; real file is not)
+config/hypermutators.txt
+
 # Patient data in non-xlsx formats
 Nathan Salomonis/
 Variants/arhg_variants_clean*.txt
