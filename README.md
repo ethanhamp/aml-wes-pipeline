@@ -1,8 +1,6 @@
-# AML ARHG Variant Pipeline
+# AML WES Variant Processing Pipeline
 
 Pipeline for processing and analyzing somatic variants from acute myeloid leukemia (AML) whole-exome sequencing data. Developed in the [Eisfeld Lab](https://cancer.osu.edu/find-a-researcher/search-researcher-directory/ann-kate-eisfeld) at The Ohio State University College of Medicine.
-
-The primary focus is on **ARHG genes** — the ARHGEF (Rho guanine nucleotide exchange factor) and ARHGAP (GTPase-activating protein) families — and their mutational dynamics between diagnosis and relapse in AML patients.
 
 ---
 
@@ -124,6 +122,8 @@ Rscript Exomes/Scripts/exomes_maftools.R
 ## Input Data Format
 
 Scripts expect per-sample Excel files produced by the OSU Varhouse pipeline (Mutect2-based somatic calling). Each file contains variant-level rows with sample-specific columns for Alt Percentage, AD Total, and T-N VAF. The `build_master_variants.R` script handles two column naming formats automatically.
+
+This pipeline is gene-agnostic — it processes all PASS variants across the exome. Downstream scripts can filter to any gene or gene set of interest.
 
 ---
 
