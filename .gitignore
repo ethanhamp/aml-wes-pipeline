@@ -1,0 +1,61 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# R
+.Rhistory
+.RData
+.Rproj.user
+*.Rproj
+
+# Python
+__pycache__/
+*.pyc
+*.pkl
+
+# Data files — never commit patient data
+*.xlsx
+*.csv
+*.tsv
+*.rds
+*.RData
+
+# Figures and presentations
+*.pdf
+*.png
+*.pptx
+*.ppt
+*.docx
+*.doc
+*.numbers
+
+# Logs and misc
+*.log
+Logs/
+
+# OneDrive / sync artifacts
+.~lock.*
+
+# Claude Code session data
+.claude/
+memory/
+
+# Context summaries
+claude_context_summary_*.txt
+
+# SSH / credentials — never commit
+OSC/sftp-nch-key.txt
+OSC/*.pem
+OSC/*.key
+
+# Patient data in non-xlsx formats
+Nathan Salomonis/
+Variants/arhg_variants_clean*.txt
+Cohorts/UPenn/RNASeq/Counts/
+Cohorts/Manifests/osc_varhouse*.txt
+RNAseq/NOISeqAdjusted*.txt
+RNAseq/NOISeqWithLNCs*.txt
+RNAseq/NOISeq_expression*.txt
+RNAseq/RAW_COUNTS*.txt
+RNAseq/BatchInfo*.txt
