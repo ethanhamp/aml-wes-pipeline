@@ -1,0 +1,133 @@
+# AML ARHG Variant Pipeline
+
+Pipeline for processing and analyzing somatic variants from acute myeloid leukemia (AML) whole-exome sequencing data. Developed in the [Eisfeld Lab](https://cancer.osu.edu/find-a-researcher/search-researcher-directory/ann-kate-eisfeld) at The Ohio State University College of Medicine.
+
+The primary focus is on **ARHG genes** — the ARHGEF (Rho guanine nucleotide exchange factor) and ARHGAP (GTPase-activating protein) families — and their mutational dynamics between diagnosis and relapse in AML patients.
+
+---
+
+## What This Pipeline Does
+
+1. **Ingests** per-sample somatic and germline variant files (Excel format from Varhouse/Mutect2)
+2. **Filters** variants by read depth, VAF, and an artifact gene exclusion list
+3. **Combines** samples across sequencing runs into a unified variant table
+4. **Analyzes** mutation burden, VAF dynamics (diagnosis → relapse), oncoplots, and domain-level variant distributions
+
+---
+
+## Repository Structure
+
+```
+├── config/
+│   ├── hypermutators.example.txt      # Template: patient IDs to flag as hypermutated
+│   └── excluded_samples.example.txt   # Template: sample IDs to exclude from analysis
+├── Exomes/
+│   └── Scripts/
+│       ├── build_master_variants.R    # Main pipeline: ingest, filter, combine all runs
+│       ├── mutation_burden.R          # Dx vs Relapse mutation count and VAF analysis
+│       ├── exomes_maftools.R          # MAF canonicalization, oncoplots, gene summaries
+│       └── exome_filtering3.R         # VAF filtering, pairing, and delta computation
+├── Variants/
+│   └── Scripts/                       # ARHG domain localization and effect prediction
+├── General/
+│   └── jeff.genes.txt                 # Artifact-prone gene exclusion list
+└── cBioPortal/
+    └── Scripts/                       # Public database mining across cancer studies
+```
+
+---
+
+## Dependencies
+
+All analysis is done in **R**. Install required packages before running:
+
+```r
+install.packages(c("tidyverse", "readxl", "writexl", "ggplot2", "ggrepel", "readr"))
+
+# maftools via Bioconductor
+if (!require("BiocManager")) install.packages("BiocManager")
+BiocManager::install("maftools")
+```
+
+---
+
+## Setup
+
+### 1. Set your project root
+
+The scripts resolve all file paths relative to a single `BASE_DIR`. Set this before running any script by adding the following to your `~/.Renviron` file:
+
+```
+ARHG_BASE_DIR=/path/to/your/project/root
+```
+
+Then restart R. Alternatively, set it at the top of any script with `Sys.setenv(ARHG_BASE_DIR = "/path/to/project")`.
+
+### 2. Configure sample exclusions
+
+Copy the template files and fill in your own IDs:
+
+```bash
+cp config/hypermutators.example.txt config/hypermutators.txt
+cp config/excluded_samples.example.txt config/excluded_samples.txt
+```
+
+- `hypermutators.txt` — patient IDs with abnormally high variant burden to flag (but not remove) during processing
+- `excluded_samples.txt` — sample IDs to drop entirely (e.g., duplicate timepoints, QC failures)
+
+Both files support `#` comments. These files are gitignored and never leave your machine.
+
+---
+
+## Usage
+
+### Build the master variant table
+
+Reads per-sample somatic and germline Excel files across all configured sequencing runs, applies inclusion filters, and outputs a combined variant table per run and a single master file.
+
+```r
+Rscript Exomes/Scripts/build_master_variants.R
+```
+
+Edit the `RUN_CONFIG` block at the top of the script to point to your own sequencing run directories.
+
+### Analyze mutation burden
+
+Compares mutation counts and VAF distributions between diagnosis and relapse timepoints.
+
+```r
+Rscript Exomes/Scripts/mutation_burden.R
+```
+
+### Generate oncoplots
+
+Converts the combined variant table to MAF format and produces oncoplots using `maftools`.
+
+```r
+Rscript Exomes/Scripts/exomes_maftools.R
+```
+
+---
+
+## Variant Filtering Criteria
+
+| Filter | Threshold |
+|--------|-----------|
+| Read depth (AD Total) | > 20 |
+| Variant allele frequency | ≥ 2% |
+| FILTER field | PASS only |
+| Artifact genes | Excluded via `General/jeff.genes.txt` |
+| Hypermutated patients | Flagged via `config/hypermutators.txt` |
+
+---
+
+## Input Data Format
+
+Scripts expect per-sample Excel files produced by the OSU Varhouse pipeline (Mutect2-based somatic calling). Each file contains variant-level rows with sample-specific columns for Alt Percentage, AD Total, and T-N VAF. The `build_master_variants.R` script handles two column naming formats automatically.
+
+---
+
+## Contact
+
+Ethan Hamp — [ethanhamp@gmail.com](mailto:ethanhamp@gmail.com)  
+Eisfeld Lab, The Ohio State University College of Medicine
