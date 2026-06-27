@@ -1,0 +1,8 @@
+# Sample IDs to exclude entirely from analysis — one per line.
+# Lines starting with # are ignored.
+# Use this for duplicate samples, known QC failures, or other
+# dataset-specific exclusions that should not be modeled.
+#
+# Example:
+# SAMPLE_001   # duplicate relapse
+# SAMPLE_002   # contaminated
