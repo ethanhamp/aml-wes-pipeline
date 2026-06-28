@@ -88,7 +88,7 @@ RUN_CONFIG <- list(
 BASE_DIR    <- Sys.getenv("ARHG_BASE_DIR", unset = normalizePath("."))
 OUTPUT_DIR  <- file.path(BASE_DIR, "Exomes/Datasets/by_run")
 MASTER_OUT  <- file.path(BASE_DIR, "Exomes/Datasets/master_variants.xlsx")
-JEFF_FILE   <- file.path(BASE_DIR, "General/jeff.genes.txt")
+ARTIFACT_GENE_FILE   <- file.path(BASE_DIR, "General/artifact_genes.txt")
 
 # Patient IDs to flag as hypermutated. Copy config/hypermutators.example.txt
 # to config/hypermutators.txt, fill in your IDs (one per line), and that file
@@ -101,11 +101,11 @@ HYPERMUTATORS <- if (file.exists(HYPERMUTATOR_FILE)) {
   character(0)
 }
 
-# ---- Load jeff.genes exclusion list ----
+# ---- Load artifact_genes exclusion list ----
 local_env <- new.env()
-source(JEFF_FILE, local = local_env)
-jeff_genes <- local_env$jeff.genes
-cat(sprintf("Loaded %d artifact genes from jeff.genes.txt\n", length(jeff_genes)))
+source(ARTIFACT_GENE_FILE, local = local_env)
+artifact_genes <- local_env$artifact_genes
+cat(sprintf("Loaded %d artifact genes from artifact_genes.txt\n", length(artifact_genes)))
 
 # ---- Helpers ----
 
@@ -246,7 +246,7 @@ normalize_germline_cols <- function(df, patient_id) {
 
 # ---- File readers ----
 
-read_somatic_file <- function(filepath, seq_run, jeff_genes, timepoint_map = NULL) {
+read_somatic_file <- function(filepath, seq_run, artifact_genes, timepoint_map = NULL) {
   stem       <- sub("(_mutect2_somatic(_re)?|_retry_somatic)\\.xlsx$", "", basename(filepath))
   patient_id <- extract_patient_id(stem)
   raw        <- suppressMessages(read_xlsx(filepath))
@@ -280,7 +280,7 @@ read_somatic_file <- function(filepath, seq_run, jeff_genes, timepoint_map = NUL
         !is.na(ad_total),
         as.numeric(ad_total) > 20,
         as.numeric(alt_percentage) >= 0.02,
-        !Gene %in% jeff_genes
+        !Gene %in% artifact_genes
       )
   }))
 
@@ -289,7 +289,7 @@ read_somatic_file <- function(filepath, seq_run, jeff_genes, timepoint_map = NUL
   df
 }
 
-read_germline_file <- function(filepath, seq_run, jeff_genes) {
+read_germline_file <- function(filepath, seq_run, artifact_genes) {
   stem       <- sub("_germline(_re)?\\.xlsx$", "", basename(filepath))
   patient_id <- extract_patient_id(stem)
   raw        <- suppressMessages(read_xlsx(filepath))
@@ -313,7 +313,7 @@ read_germline_file <- function(filepath, seq_run, jeff_genes) {
       !is.na(ad_total),
       as.numeric(ad_total) > 20,
       as.numeric(alt_percentage) >= 0.02,
-      !Gene %in% jeff_genes
+      !Gene %in% artifact_genes
     )
 
   attr(df, "n_raw") <- n_raw
@@ -322,7 +322,7 @@ read_germline_file <- function(filepath, seq_run, jeff_genes) {
 
 # ---- Per-run builder ----
 
-build_run_combined <- function(run_dir, seq_run, jeff_genes, out_dir = NULL,
+build_run_combined <- function(run_dir, seq_run, artifact_genes, out_dir = NULL,
                                timepoint_map = NULL) {
   run_dir <- file.path(BASE_DIR, run_dir)
   somatic_files  <- list.files(run_dir, pattern = "_mutect2_somatic(_re)?\\.xlsx$|_retry_somatic\\.xlsx$", full.names = TRUE, recursive = TRUE)
@@ -337,7 +337,7 @@ build_run_combined <- function(run_dir, seq_run, jeff_genes, out_dir = NULL,
 
   read_somatic_logged <- function(f) {
     tryCatch({
-      df <- read_somatic_file(f, seq_run, jeff_genes, timepoint_map)
+      df <- read_somatic_file(f, seq_run, artifact_genes, timepoint_map)
       cat(sprintf("  %-55s  raw=%d  pass=%d\n", basename(f), attr(df, "n_raw"), nrow(df)))
       df
     }, error = function(e) {
@@ -348,7 +348,7 @@ build_run_combined <- function(run_dir, seq_run, jeff_genes, out_dir = NULL,
 
   read_germline_logged <- function(f) {
     tryCatch({
-      df <- read_germline_file(f, seq_run, jeff_genes)
+      df <- read_germline_file(f, seq_run, artifact_genes)
       cat(sprintf("  %-55s  raw=%d  pass=%d\n", basename(f), attr(df, "n_raw"), nrow(df)))
       df
     }, error = function(e) {
@@ -401,7 +401,7 @@ build_run_combined <- function(run_dir, seq_run, jeff_genes, out_dir = NULL,
 # ---- Main ----
 
 all_runs <- map(RUN_CONFIG, function(cfg) {
-  build_run_combined(cfg$dir, cfg$seq_run, jeff_genes, cfg$out_dir, cfg$timepoint_map)
+  build_run_combined(cfg$dir, cfg$seq_run, artifact_genes, cfg$out_dir, cfg$timepoint_map)
 })
 all_runs <- compact(all_runs)
 

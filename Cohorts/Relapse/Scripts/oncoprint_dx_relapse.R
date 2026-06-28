@@ -19,8 +19,8 @@ COLORS <- c(
 
 # Artifact genes excluded from all analyses (sourced from combine_pass_variants.R)
 local_env <- new.env()
-source(file.path(BASE_DIR, "General/jeff.genes.txt"), local = local_env)
-jeff.genes <- local_env$jeff.genes
+source(file.path(BASE_DIR, "General/artifact_genes.txt"), local = local_env)
+artifact_genes <- local_env$artifact_genes
 
 # ── 1. Load combined variants ──────────────────────────────────────────────────
 message("Loading relapse_pass_variants_combined.xlsx ...")
@@ -33,10 +33,10 @@ df |>
   arrange(Pair_ID) 
 
 # ── 2. Filter to somatic timepoints only; exclude artifact genes
-#       (combined file may predate jeff.genes exclusion in combine script)
+#       (combined file may predate artifact_genes exclusion in combine script)
 df_somatic <- df |>
   filter(Timepoint %in% c("diagnosis", "relapse"),
-         !Gene %in% jeff.genes)
+         !Gene %in% artifact_genes)
 
 # ── 2b. Collapse all ARHG* genes into a single "ARHG" label ──────────────────
 df_somatic <- df_somatic |>

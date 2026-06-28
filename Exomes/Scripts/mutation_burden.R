@@ -10,8 +10,8 @@ library(ggrepel)
 BASE_DIR <- Sys.getenv("ARHG_BASE_DIR", unset = normalizePath("."))
 
 local_env <- new.env()
-source(file.path(BASE_DIR, "General/jeff.genes.txt"), local = local_env)
-jeff.genes <- local_env$jeff.genes
+source(file.path(BASE_DIR, "General/artifact_genes.txt"), local = local_env)
+artifact_genes <- local_env$artifact_genes
 
 EXCLUDED_FILE <- file.path(BASE_DIR, "config/excluded_samples.txt")
 EXCLUDED_SAMPLES <- if (file.exists(EXCLUDED_FILE)) {
@@ -29,7 +29,7 @@ combined <- combined[combined$`AD Total` > 20, ]
 
 combined <- combined[!combined$`Sample ID` %in% EXCLUDED_SAMPLES, ]
 combined <- combined[!(combined$Group %in% c("11","4")), ]
-combined <- combined[!combined$Gene %in% jeff.genes, ]
+combined <- combined[!combined$Gene %in% artifact_genes, ]
 
 # all_samples_clean <- all_samples_clean[all_samples_clean$`Alt Percentage` >0.02, ]
 

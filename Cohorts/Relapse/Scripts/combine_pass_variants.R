@@ -8,8 +8,8 @@ BASE_DIR    <- Sys.getenv("ARHG_BASE_DIR", unset = normalizePath("."))
 relapse_dir <- file.path(BASE_DIR, "Cohorts/Relapse")
 
 local_env <- new.env()
-source(file.path(BASE_DIR, "General/jeff.genes.txt"), local = local_env)
-jeff.genes <- local_env$jeff.genes
+source(file.path(BASE_DIR, "General/artifact_genes.txt"), local = local_env)
+artifact_genes <- local_env$artifact_genes
 
 all_files <- list.files(relapse_dir, pattern = "\\.xlsx$", full.names = TRUE)
 
@@ -295,7 +295,7 @@ all_variants <- bind_rows(lapply(Filter(Negate(is.null), all_lists),
 all_variants <- suppressMessages(type_convert(all_variants))
 all_variants <- all_variants[!all_variants$Sample_ID %in% exclude_samples &
                              !all_variants$Pair_ID   %in% exclude_samples, ]
-all_variants <- all_variants[!is.na(all_variants$Gene) & !all_variants$Gene %in% jeff.genes, ]
+all_variants <- all_variants[!is.na(all_variants$Gene) & !all_variants$Gene %in% artifact_genes, ]
 
 # ── Patient_Group column ───────────────────────────────────────────────────────
 # Rank unique Pair_IDs alphabetically and assign zero-padded sequential labels

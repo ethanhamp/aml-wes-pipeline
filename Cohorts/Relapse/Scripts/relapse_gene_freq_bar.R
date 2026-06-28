@@ -12,8 +12,8 @@ TOP_N_GENES   <- 20
 # Artifact / recurrently mutated normal-tissue genes to exclude.
 # Identical vector used in gainloss_bar_relapse.R and mutation_burden_relapse.R.
 local_env <- new.env()
-source(file.path(BASE_DIR, "General/jeff.genes.txt"), local = local_env)
-jeff.genes <- local_env$jeff.genes
+source(file.path(BASE_DIR, "General/artifact_genes.txt"), local = local_env)
+artifact_genes <- local_env$artifact_genes
 
 # ── 1. Load and filter to relapse timepoint ────────────────────────────────────
 # We restrict to Timepoint == "relapse" only; germline and diagnosis rows are
@@ -23,7 +23,7 @@ df <- read_excel(file.path(BASE_DIR, "Cohorts/Relapse/relapse_pass_variants_comb
 df_relapse <- df |>
   filter(
     Timepoint == "relapse",
-    !Gene %in% jeff.genes,
+    !Gene %in% artifact_genes,
     !Patient_Group %in% c("Patient_23", "Patient_25")  # hypermutated patients
   ) |>
   # Collapse all ARHG-family genes (ARHGEF*, ARHGAP*) into a single "ARHG" label
@@ -94,7 +94,7 @@ p <- ggplot(top_genes_df, aes(x = Gene, y = n_patients)) +
     x       = NULL,
     y       = "Number of patients",
     caption = sprintf(
-      "Filters: Timepoint == relapse | T-N VAF >= %.0f%% | excl. jeff.genes | excl. hypermutators (Patient_23, Patient_25)\nARHG* genes collapsed to 'ARHG'. Percentages shown above bars = %% of %d patients.",
+      "Filters: Timepoint == relapse | T-N VAF >= %.0f%% | excl. artifact_genes | excl. hypermutators (Patient_23, Patient_25)\nARHG* genes collapsed to 'ARHG'. Percentages shown above bars = %% of %d patients.",
       VAF_THRESHOLD * 100, n_total_patients
     )
   ) +

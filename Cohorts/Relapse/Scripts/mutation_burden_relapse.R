@@ -8,8 +8,8 @@ BASE_DIR <- Sys.getenv("ARHG_BASE_DIR", unset = normalizePath("."))
 VAF_THRESHOLD <- 0.02
 
 local_env <- new.env()
-source(file.path(BASE_DIR, "General/jeff.genes.txt"), local = local_env)
-jeff.genes <- local_env$jeff.genes
+source(file.path(BASE_DIR, "General/artifact_genes.txt"), local = local_env)
+artifact_genes <- local_env$artifact_genes
 
 # ── 1. Load and filter ─────────────────────────────────────────────────────────
 df <- read_excel(file.path(BASE_DIR, "Cohorts/Relapse/relapse_pass_variants_combined.xlsx"))
@@ -17,7 +17,7 @@ df <- read_excel(file.path(BASE_DIR, "Cohorts/Relapse/relapse_pass_variants_comb
 df_somatic <- df |>
   filter(
     Timepoint %in% c("diagnosis", "relapse"),
-    !Gene %in% jeff.genes,
+    !Gene %in% artifact_genes,
     !Patient_Group %in% c("Patient_23", "Patient_25")   # hypermutators
   )
 

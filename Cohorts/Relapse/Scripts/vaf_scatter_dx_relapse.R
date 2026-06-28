@@ -21,7 +21,7 @@ COLORS <- c(
 
 # Artifact / low-complexity genes excluded from all Eisfeld Lab analyses.
 # List sourced from combine_pass_variants.R via oncoprint_dx_relapse.R.
-jeff.genes <- c(
+artifact_genes <- c(
   "ABCA13", "ABCA4", "AHNAK", "AHNAK2", "ANKRD30A", "ANKRD30B", "BSN", "CNTNAP2",
   "COL1A2", "COL6A3", "DNAH1", "DNAH10", "DNAH11", "DNAH17", "DNAH2", "DNAH5",
   "DNAH8", "DNAH9", "FAT1", "FAT2", "FLG", "FRAS1", "FREM2", "HRNR", "KLRC1",
@@ -48,12 +48,12 @@ message(sprintf("  %d rows, %d columns", nrow(df), ncol(df)))
 
 # ── 2. Filter: timepoints, artifact genes, hypermutated patients ───────────────
 # Patient_23 and Patient_25 are excluded as hypermutators (Groups 11 and 4).
-# jeff.genes are recurrent sequencing artifacts unlikely to represent true somatic
+# artifact_genes are recurrent sequencing artifacts unlikely to represent true somatic
 # mutations; they inflate burden counts and confound clonal evolution analyses.
 df_somatic <- df |>
   filter(
     Timepoint      %in% c("diagnosis", "relapse"),
-    !Gene          %in% jeff.genes,
+    !Gene          %in% artifact_genes,
     !Patient_Group %in% c("Patient_23", "Patient_25")
   ) |>
   # Collapse all ARHG family members (ARHGEF*, ARHGAP*) into a single label so
