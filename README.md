@@ -28,7 +28,10 @@ Pipeline for processing and analyzing somatic variants from acute myeloid leukem
 ├── Variants/
 │   └── Scripts/                       # ARHG domain localization and effect prediction
 ├── General/
-│   └── jeff.genes.txt                 # Artifact-prone gene exclusion list
+│   └── artifact_genes.txt             # Curated list of recurrently artifact-prone genes
+│                                      # excluded from somatic variant analysis (e.g.,
+│                                      # genes with known mapping artifacts, common
+│                                      # germline contamination, or sequencer noise)
 └── cBioPortal/
     └── Scripts/                       # Public database mining across cancer studies
 ```
@@ -114,14 +117,20 @@ Rscript Exomes/Scripts/exomes_maftools.R
 | Read depth (AD Total) | > 20 |
 | Variant allele frequency | ≥ 2% |
 | FILTER field | PASS only |
-| Artifact genes | Excluded via `General/jeff.genes.txt` |
+| Artifact genes | Excluded via `General/artifact_genes.txt` |
 | Hypermutated patients | Flagged via `config/hypermutators.txt` |
 
 ---
 
 ## Input Data Format
 
-Scripts expect per-sample Excel files produced by the OSU Varhouse pipeline (Mutect2-based somatic calling). Each file contains variant-level rows with sample-specific columns for Alt Percentage, AD Total, and T-N VAF. The `build_master_variants.R` script handles two column naming formats automatically.
+Variant calls originate from **Nationwide Children's Hospital's Churchill WES pipeline** — a Mutect2-based somatic caller that produces per-sample Excel workbooks through the Varhouse reporting system. Churchill calls variants in tumor-normal pairs (peripheral blood or CD3+ T-cell normal), applies standard FILTER flags, and exports one Excel file per sample containing:
+
+- Somatic and germline calls in separate sheets
+- Per-variant columns: Gene, HGVS notation (MANE transcript), Alt Percentage, AD Total, T-VAF, N-VAF, FILTER status, and functional effect annotation
+- Sample metadata in the filename (patient ID, timepoint, run ID)
+
+The `build_master_variants.R` script reads these Excel files directly — no VCF conversion required. It handles two column naming formats used across different Churchill pipeline versions automatically.
 
 This pipeline is gene-agnostic — it processes all PASS variants across the exome. Downstream scripts can filter to any gene or gene set of interest.
 
