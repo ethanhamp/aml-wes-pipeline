@@ -124,7 +124,7 @@ Rscript Exomes/Scripts/exomes_maftools.R
 
 ## Input Data Format
 
-Variant calls originate from **Nationwide Children's Hospital's Churchill WES pipeline** — a Mutect2-based somatic caller that produces per-sample Excel workbooks through the Varhouse reporting system. Churchill calls variants in tumor-normal pairs (peripheral blood or CD3+ T-cell normal), applies standard FILTER flags, and exports one Excel file per sample containing:
+Variant calls originate from **Nationwide Children's Hospital's Churchill WES pipeline** — a Mutect2-based somatic caller that produces per-sample Excel workbooks through the Varhouse reporting system. Churchill calls variants in tumor-normal pairs: the tumor sample is peripheral blood or bone marrow, and the matched germline normal is sorted B and T cells from the same patient. Standard FILTER flags are applied, and one Excel file per sample is exported containing:
 
 - Somatic and germline calls in separate sheets
 - Per-variant columns: Gene, HGVS notation (MANE transcript), Alt Percentage, AD Total, T-VAF, N-VAF, FILTER status, and functional effect annotation
