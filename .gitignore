@@ -58,6 +58,7 @@ config/relapse_pairs.csv
 !config/*.example.txt
 
 # Patient data in non-xlsx formats
+Goals/
 Nathan Salomonis/
 Variants/arhg_variants_clean*.txt
 Cohorts/UPenn/RNASeq/Counts/
