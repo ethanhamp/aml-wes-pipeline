@@ -53,6 +53,7 @@ OSC/*.key
 config/hypermutators.txt
 config/excluded_samples.txt
 config/relapse_pairs.csv
+config/wes_patients.txt
 # Allow example/template config files even though *.csv is globally ignored
 !config/*.example.csv
 !config/*.example.txt

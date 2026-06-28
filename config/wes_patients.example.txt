@@ -1,0 +1,11 @@
+# config/wes_patients.txt — patient IDs confirmed to have WES data
+# Used by Ras Signature/Scripts/compare_cohorts_affine.py to identify
+# patients without exome sequencing (who cannot be confirmed RAS-pathway-clean).
+# One ID per line. Lines starting with # are ignored.
+#
+# Copy this file to config/wes_patients.txt and populate with actual IDs.
+# config/wes_patients.txt is gitignored (contains patient identifiers).
+#
+# EXAMPLE IDs (replace with real IDs from arhg_mutant_unified_long.rds):
+# EXAMPLE-001
+# EXAMPLE-002
