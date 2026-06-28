@@ -1,0 +1,8 @@
+relapse_id,pair_id,dx_base
+# One row per Dx-Rel pair where the relapse file ID doesn't carry a suffix
+# that identifies its diagnosis counterpart automatically.
+# relapse_id: the sample ID inside the relapse germline file
+# pair_id:    the diagnosis sample ID used for column matching
+# dx_base:    base string used to find "T-N VAF (dx_base...)" columns
+RELAPSE_SAMPLE_1,DX_SAMPLE_1A,DX_SAMPLE_1
+RELAPSE_SAMPLE_2,DX_SAMPLE_2A,DX_SAMPLE_2

@@ -52,6 +52,10 @@ OSC/*.key
 # User-supplied config with patient IDs (templates are tracked; real files are not)
 config/hypermutators.txt
 config/excluded_samples.txt
+config/relapse_pairs.csv
+# Allow example/template config files even though *.csv is globally ignored
+!config/*.example.csv
+!config/*.example.txt
 
 # Patient data in non-xlsx formats
 Nathan Salomonis/
