@@ -2,6 +2,8 @@
 
 Pipeline for processing and analyzing somatic variants from acute myeloid leukemia (AML) whole-exome sequencing data. Developed in the [Eisfeld Lab](https://cancer.osu.edu/find-a-researcher/search-researcher-directory/ann-kate-eisfeld) at The Ohio State University College of Medicine.
 
+RNA-seq expression analysis and RAS pathway activation scoring live in the companion repository: [aml-rnaseq-analysis](https://github.com/ethanhamp/aml-rnaseq-analysis).
+
 ---
 
 ## What This Pipeline Does
